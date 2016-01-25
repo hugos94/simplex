@@ -10,6 +10,8 @@ void imprime_tableaux(int l, int c, double tableaux[][100], int * tipo_restricao
 void imprime_problema(int op, int l, int c, double * Z, double restricoes[][100], int * tipo_restricao);
 void imprime_na_forma_padrao(int l, int c, double * Z, double padrao[][100], int * tipo_restricao, int q_var, int op);
 int menu();
+int menu_principal();
+int menu_continuar();
 void salvar_valores(double * Z, double restricoes[][100], int l, int c, int * tipo_restricao);
 int verificar_otimo(double tableaux[][100], int c, int l, int cPivo);
 int variable_in(double tableaux[][100], int c);
@@ -39,8 +41,7 @@ void imprime_w(int l, int c, double tableaux[][100], double * W) {
     for(j = 0; j < c - 2; j++){
         printf("X%d\t", j + 1);
 	}
-    printf("b\n\n");
-    printf("base\t");
+    printf("b\n\nbase\t");
     for(j = 0; j < c; j++){
         printf("%.1lf\t", W[j]);
 	}
@@ -69,26 +70,34 @@ void imprime_w(int l, int c, double tableaux[][100], double * W) {
     }
     getch();
 }
+
 void iteracao_w(double tableaux[][100], double * W, int l, int c, int lPivo, int cPivo) {
     int i, j;
     double aux;
     aux = tableaux[lPivo][cPivo];
     for(i = 0; i < c; i++){
         tableaux[lPivo][i] = (tableaux[lPivo][i] / aux);
-        }
-    for(i = 0; i < l; i++)
-        if(i != lPivo)
+	}
+	
+    for(i = 0; i < l; i++){
+        if(i != lPivo){
             for(j = 0; j < c; j++) {
-                if(j == 0)
+                if(j == 0){
                     aux = tableaux[i][cPivo];
+				}
                 tableaux[i][j] = tableaux[i][j] - (aux * tableaux[lPivo][j]);
             }
+		}
+	}
+	
     for(j = 0; j < c; j++) {
-        if(j == 0)
+        if(j == 0){
             aux = W[cPivo];
+		}
         W[j] = W[j] - (aux * tableaux[lPivo][j]);
     }
 }
+
 int verificar_w(double * W, int c) {
     int i, aux = 0;
     for(i = 1; i < c - 1; i++) {
@@ -97,10 +106,12 @@ int verificar_w(double * W, int c) {
             break;
         }
     }
-    if(aux == 0 && W[c - 1] != 0)
+    if(aux == 0 && W[c - 1] != 0){
         aux = 2;
+	}
     return aux;
 }
+
 int win(double * W, int c) {
     int i, indice = 0;
     double menor = 0;
@@ -158,6 +169,7 @@ void primeira_fase(double tableaux[][100], double * W, int l, int c, int * tipo_
         }
     }
 }
+
 //1.1 - fun��o que imprime o tableaux
 void imprime_tableaux(int l, int c, double tableaux[][100], int * tipo_restricao) {
     int i, j, isBasic, k, * x, cont = 0, tam, k2;
@@ -231,6 +243,7 @@ void imprime_tableaux(int l, int c, double tableaux[][100], int * tipo_restricao
         printf("\n\nZ = %.1lf\n\n", tableaux[0][c - 1]);
     getch();
 }
+
 //1.1 - fun��o que imprime o problema
 void imprime_problema(int op, int l, int c, double * Z, double restricoes[][100], int * tipo_restricao) {
     int i, j, cont = 0;
@@ -287,6 +300,7 @@ void imprime_problema(int op, int l, int c, double * Z, double restricoes[][100]
     printf(" >= 0");
     getch();
 }
+
 //1.1 - fun��o que imprime o problema na forma padr�o
 void imprime_na_forma_padrao(int l, int c, double * Z, double padrao[][100], int * tipo_restricao, int q_var, int op) {
     int i, j, cont = 0;
@@ -342,6 +356,7 @@ void imprime_na_forma_padrao(int l, int c, double * Z, double padrao[][100], int
     printf(" >= 0");
     getch();
 }
+
 //1.2 - fun��o p/ selecionar a op��o
 int menu() {
     int op;
@@ -357,6 +372,7 @@ int menu() {
     system("cls");
     return op;
 }
+
 //1.2 - fun��o p/ ler valores de Z e da matriz de Restri��es
 void salvar_valores(double * Z, double restricoes[][100], int l, int c, int * tipo_restricao) {
     int i, j, cont = 0;
@@ -382,6 +398,7 @@ void salvar_valores(double * Z, double restricoes[][100], int l, int c, int * ti
             scanf("%lf", & restricoes[i][j]);
         }
 }
+
 //1.2 Verifica se a fun��o � �tima
 int verificar_otimo(double tableaux[][100], int c, int l, int cPivo) { //1.6 - O cabe�alho da fun��o foi alterado, pois h� a necessidade de receber o numero de linhas do tableaux e a coluna Piv�.
     int i, aux = 0;
@@ -400,6 +417,7 @@ int verificar_otimo(double tableaux[][100], int c, int l, int cPivo) { //1.6 - O
         }
     return aux; //1.2 - se aux aqui for 0, indica que a solu��o � �tima
 }
+
 //1.2 - fun��o que encontra quem deve entrar na base.
 int variable_in(double tableaux[][100], int c) {
     int i, indice = 0; //1.2 - indice vai indicar a coluna do tlabeux que est� a vari�vel que deve entrar na base.
@@ -411,6 +429,7 @@ int variable_in(double tableaux[][100], int c) {
         }
     return indice;
 }
+
 //1.2 - fun��o que encontra quem deve sair da base.
 int variable_out(double tableaux[][100], int ind, int l, int c) {
     int i, indice; // 1.2- indice guarda a linha que est� a vari�vel que vai sair.
@@ -425,6 +444,7 @@ int variable_out(double tableaux[][100], int ind, int l, int c) {
         }
     return indice;
 }
+
 //1.5 - fun��o para testar se as fun��es variable_in e variable_out est�o funcionando
 void resultado_tableaux(double tableaux[][100], int l, int c, int * tipo_restricao) {
     int isOtimo, in, out, i, aux, j;
@@ -480,6 +500,7 @@ void resultado_tableaux(double tableaux[][100], int l, int c, int * tipo_restric
         getch();
     }
 }
+
 //1.5 - fun��o que aplica os c�lculos no tableuax
 void iteracao_tableaux(double tableaux[][100], int l, int c, int lPivo, int cPivo) {
     int i, j;
@@ -498,23 +519,43 @@ void iteracao_tableaux(double tableaux[][100], int l, int c, int lPivo, int cPiv
     }
 }
 
+//1.2 - Menu Principal
+int menu_principal() {
+    int op;
+    do{
+        system("cls");
+        printf("----------SIMPLEX----------\n");
+        printf("DESEJA UTILIZAR PROBLEMAS DO ARQUIVO OU INSERIR PROBLEMAS MANUALMENTE?\n");
+        printf("1. ARQUIVO\n");
+        printf("2. DIGITAR\n");
+        printf("3. SAIR\n\n");
+        printf("Opcao: ");
+        scanf("%d%*c", & op);
+	} while(op != 1 && op != 2 && op != 3);
+    return op;
+}
+
+//1.2 - Menu Principal
+int menu_continuar() {
+    int op;
+    do {
+        system("cls");
+        printf("DESEJA CONTINUAR COM OUTRO PROBLEMA?\n");
+        printf("1. SIM\n");
+        printf("2. NAO\n\n");
+        printf("Opcao: ");
+        scanf("%d", & op);
+    } while(op != 1 && op != 2);
+    return op;
+}
+
 // Main
 int main() {
     int opcao, op, i, j, l, c, aux, tipo_restricao[100], q_var, cont = 0, tamZ;
     double restricoes[100][100], padrao[100][100], Z[100], W[100];
     FILE * arquivo;
-    arquivo = fopen("in.txt", "r");
     do {
-        do {
-            system("cls");
-            printf("----------SIMPLEX----------\n");
-            printf("DESEJA UTILIZAR PROBLEMAS DO ARQUIVO OU INSERIR PROBLEMAS MANUALMENTE?\n");
-            printf("1. ARQUIVO\n");
-            printf("2. DIGITAR\n");
-            printf("3. SAIR\n\n");
-            printf("Opcao: ");
-            scanf("%d%*c", & opcao);
-        } while(opcao != 1 && opcao != 2 && opcao != 3);
+        opcao = menu_principal();
         if(opcao ==  3)
             break;
         if(opcao == 2) {
@@ -538,6 +579,7 @@ int main() {
             salvar_valores(Z, restricoes, l, c, tipo_restricao); // 1.2 - fun��o criada separadamente pra ler as entradas de dados
             op = menu(); //1.2 - fun��o menu criada s� pra diminuir um pouco o c�digo na main
         } else {
+    		arquivo = fopen("in.txt", "r");
             if(fscanf(arquivo, "%d %d", & l, & c) == EOF) {
                 printf("NAO EXISTE MAIS PROBLEMAS NO ARQUIVO!!!\n");
                 getch();
@@ -644,14 +686,7 @@ int main() {
             imprime_tableaux(l, c, tableaux, tipo_restricao);
             resultado_tableaux(tableaux, l, c, tipo_restricao);
         }
-        do {
-            system("cls");
-            printf("DESEJA CONTINUAR COM OUTRO PROBLEMA?\n");
-            printf("1. SIM\n");
-            printf("2. NAO\n\n");
-            printf("Opcao: ");
-            scanf("%d", & opcao);
-        } while(opcao != 1 && opcao != 2);
+        opcao = menu_continuar();
     } while(opcao != 2);
     fclose(arquivo);
     return 0;
