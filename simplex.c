@@ -556,75 +556,83 @@ int main() {
     FILE * arquivo;
     do {
         opcao = menu_principal();
-        if(opcao ==  3)
-            break;
-        if(opcao == 2) {
-            system("cls");
-            printf("----------SIMPLEX----------\n");
-            do {
-                printf("\nQuantas restricoes tem o problema? ");  //A quantidade de restri��es representa a quantidade de linhas da matriz
-                scanf("%d", & l);
-                if(l <= 0)
-                    printf("Quantidade invalida!\n");
-            } while(l <= 0);
-            do {
-                printf("\nQuantas variaveis tem o problema? "); //A quantidade de vari�veis + 1 representa a quantidade de colunas da matriz
-                scanf("%d", & c);
-                if(c <= 0)
-                    printf("Quantidade invalida!\n");
-            } while(c <= 0);
-            tamZ = c;
-            c = c + 1;
-            printf("\n");
-            salvar_valores(Z, restricoes, l, c, tipo_restricao); // 1.2 - fun��o criada separadamente pra ler as entradas de dados
-            op = menu(); //1.2 - fun��o menu criada s� pra diminuir um pouco o c�digo na main
-        } else {
-    		arquivo = fopen("in.txt", "r");
-            if(fscanf(arquivo, "%d %d", & l, & c) == EOF) {
-                printf("NAO EXISTE MAIS PROBLEMAS NO ARQUIVO!!!\n");
-                getch();
-                continue;
-            }
-            tamZ = c;
-            c = c + 1;
-            int cont = 0;
-            for(i = 0; i < c - 1; i++)
-                fscanf(arquivo, "%lf", & Z[i]);
-            for(i = 0; i < l; i++)
-                for(j = 0; j < c; j++) {
-                    if(j == c - 1) { //Verifica se vai ler um coeficiente de X ou a igualdade da restri��o
-                        fscanf(arquivo, "%d", & tipo_restricao[cont]);
-                        cont++;
-                    }
-                    fscanf(arquivo, "%lf", & restricoes[i][j]);
-                }
-            fscanf(arquivo, "%d", & op);
-        }
+        switch(opcao){
+			case 1:
+				arquivo = fopen("in.txt", "r");
+	            if(fscanf(arquivo, "%d %d", & l, & c) == EOF) {
+	                printf("NAO EXISTE MAIS PROBLEMAS NO ARQUIVO!!!\n");
+	                getch();
+	                continue;
+	            }
+	            tamZ = c;
+	            c = c + 1;
+	            int cont = 0;
+	            for(i = 0; i < c - 1; i++)
+	                fscanf(arquivo, "%lf", & Z[i]);
+	            for(i = 0; i < l; i++)
+	                for(j = 0; j < c; j++) {
+	                    if(j == c - 1) { //Verifica se vai ler um coeficiente de X ou a igualdade da restri��o
+	                        fscanf(arquivo, "%d", & tipo_restricao[cont]);
+	                        cont++;
+	                    }
+	                    fscanf(arquivo, "%lf", & restricoes[i][j]);
+	                }
+	            fscanf(arquivo, "%d", & op);
+	            fclose(arquivo);
+				break;
+			case 2:
+				system("cls");
+	            printf("----------SIMPLEX----------\n");
+	            do {
+	                printf("\nQuantas restricoes tem o problema? ");  //A quantidade de restri��es representa a quantidade de linhas da matriz
+	                scanf("%d", & l);
+	                if(l <= 0)
+	                    printf("Quantidade invalida!\n");
+	            } while(l <= 0);
+	            do {
+	                printf("\nQuantas variaveis tem o problema? "); //A quantidade de vari�veis + 1 representa a quantidade de colunas da matriz
+	                scanf("%d", & c);
+	                if(c <= 0)
+	                    printf("Quantidade invalida!\n");
+	            } while(c <= 0);
+	            tamZ = c;
+	            c = c + 1;
+	            printf("\n");
+	            salvar_valores(Z, restricoes, l, c, tipo_restricao); // 1.2 - fun��o criada separadamente pra ler as entradas de dados
+	            op = menu(); //1.2 - fun��o menu criada s� pra diminuir um pouco o c�digo na main
+				break;
+			default:
+				exit(0);
+		}
         imprime_problema(op, l, c, Z, restricoes, tipo_restricao);
         //Colocando a matriz na forma padr�o
         //aux=c-1;    //Guarda em aux a posi��o da matriz a partir da qual v�o se colocar as vari�veis de folga
         aux = 0;
         //c=c+l;  //O n�mero de colunas da matriz aumenta por causa das vari�veis de folga
         q_var = c - 1;
-        for(i = 0; i < l; i++)
+        for(i = 0; i < l; i++){
             c = c + tipo_restricao[i];
-        for(i = 0; i < l; i++)
-            for(j = 0; j < c - 1; j++)
-                if(j < q_var) //Ate o tamanho da matriz restricoes apenas copia os coeficientes de uma pra outra
+		}
+        for(i = 0; i < l; i++){
+            for(j = 0; j < c - 1; j++){
+                if(j < q_var){ //Ate o tamanho da matriz restricoes apenas copia os coeficientes de uma pra outra
                     padrao[i][j] = restricoes[i][j];
-                else {
-                    if(j == q_var)  //Copia a igualdade da matriz restri��es para o fim da matriz padrao
+				} else {
+                    if(j == q_var){  //Copia a igualdade da matriz restri��es para o fim da matriz padrao
                         padrao[i][c - 1] = restricoes[i][j];
+					}
                     padrao[i][j] = 0;
                 }
-        for(j = 0; j < c - 1; j++)
+			}
+		}
+        for(j = 0; j < c - 1; j++){
             if(j >= q_var) {
-                if(tipo_restricao[cont] == 1)
+                if(tipo_restricao[cont] == 1){
                     padrao[aux][j] = 1;
-                else {
-                    if(padrao[aux][j - 1] == -1)
+				} else {
+                    if(padrao[aux][j - 1] == -1){
                         padrao[aux][j] = 1;
-                    else {
+					} else {
                         padrao[aux][j] = -1;
                         cont--;
                         aux--;
@@ -633,10 +641,13 @@ int main() {
                 cont++;
                 aux = aux + 1;
             }
+		}
         //1.1 - Colocando Z na forma padr�o
-        if(op == 1) //1.3 - s� muda o sinal se for de maximiza��o (equivale a multiplicar todo o Z por -1)
-            for(j = 0; j < q_var; j++)
+        if(op == 1){ //1.3 - s� muda o sinal se for de maximiza��o (equivale a multiplicar todo o Z por -1)
+            for(j = 0; j < q_var; j++){
                 Z[j] = Z[j] * (-1);
+			}
+		}
         Z[j] = 0;
         //restricoes = desaloca_matriz(l, restricoes);   //Matriz restri��es n�o vai mais ser usada, ent�o desaloquei ela
         imprime_na_forma_padrao(l, c, Z, padrao, tipo_restricao, q_var, op);
@@ -644,35 +655,44 @@ int main() {
         c = c + 1; //1.1 - precisa de mais uma coluna para o Z
         l = l + 1; //1.1 - precisa de mais uma linha para a base
         //1.1. - Definindo a primeira coluna do tableaux
-        if(op == 1)
+        if(op == 1){
             tableaux[0][0] = 1;
-        else
+		}else{
             tableaux[0][0] = -1; //1.3 - caso seja de minimiza��o multiplica-se a linha base por -1, inclusive o Z
+		}
         //Atribui��o da coluna do Z que tem 1 na primeira linha e 0 nas outras
-        for(i = 1; i < l; i++)
-            tableaux[i][0] = 0;
+        for(i = 1; i < l; i++){
+			tableaux[i][0] = 0;
+		}
+
         //1.1 - Colocando Z no tableaux
-        for(j = 1; j < tamZ + 1; j++) //1.1 - Atribuindo o vetor Z como a linha baase no tableaux
+        for(j = 1; j < tamZ + 1; j++){ //1.1 - Atribuindo o vetor Z como a linha baase no tableaux
             tableaux[0][j] = Z[j - 1];
-        for(j = tamZ + 1; j < c; j++)
+		}
+        for(j = tamZ + 1; j < c; j++){
             tableaux[0][j] = 0;
+		}
         //1.1 - Colocando as restri��es no tableaux
-        for(i = 1; i < l; i++)
-            for(j = 1; j < c; j++)
+        for(i = 1; i < l; i++){
+            for(j = 1; j < c; j++){
                 tableaux[i][j] = padrao[i - 1][j - 1];
+			}
+		}
         aux = 0;
-        for(i = 0; i < l - 1; i++)
+        for(i = 0; i < l - 1; i++){
             if(tipo_restricao[i] == 2) {
                 aux = 1;
                 break;
             }
+		}
         printf("\n\nTableaux:");
         if(aux == 1) {
             W[0] = -1;
-            for(i = 0; i < l - 1; i++)
+            for(i = 0; i < l - 1; i++){
                 if(tipo_restricao[i] == 2) {
-                    for(j = 0; j < c - 1; j++)
+                    for(j = 0; j < c - 1; j++){
                         W[j + 1] = W[j + 1] + (padrao[i][j] * (-1));
+					}
                     for(j = c - 1; j != 0; j--) {
                         if(W[j] == -1) {
                             W[j] = 0;
@@ -680,6 +700,7 @@ int main() {
                         }
                     }
                 }
+			}
             imprime_w(l, c, tableaux, W);
             primeira_fase(tableaux, W, l, c, tipo_restricao);
         } else {
@@ -688,6 +709,5 @@ int main() {
         }
         opcao = menu_continuar();
     } while(opcao != 2);
-    fclose(arquivo);
     return 0;
 }
