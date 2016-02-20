@@ -25,7 +25,7 @@ void iteracao_w(double tableaux[][100], double * W, int l, int c, int lPivo, int
 void imprime_w(int l, int c, double tableaux[][100], double * W);
 
 //Funcao que retorna o modulo de um double
-double modulo(double n) { 
+double modulo(double n) {
     if(n >= 0){
         return n;
 	}else{
@@ -78,7 +78,7 @@ void iteracao_w(double tableaux[][100], double * W, int l, int c, int lPivo, int
     for(i = 0; i < c; i++){
         tableaux[lPivo][i] = (tableaux[lPivo][i] / aux);
 	}
-	
+
     for(i = 0; i < l; i++){
         if(i != lPivo){
             for(j = 0; j < c; j++) {
@@ -89,7 +89,7 @@ void iteracao_w(double tableaux[][100], double * W, int l, int c, int lPivo, int
             }
 		}
 	}
-	
+
     for(j = 0; j < c; j++) {
         if(j == 0){
             aux = W[cPivo];
@@ -559,26 +559,26 @@ int main() {
         switch(opcao){
 			case 1:
 				arquivo = fopen("in.txt", "r");
-	            if(fscanf(arquivo, "%d %d", & l, & c) == EOF) {
-	                printf("NAO EXISTE MAIS PROBLEMAS NO ARQUIVO!!!\n");
-	                getch();
-	                continue;
-	            }
-	            tamZ = c;
-	            c = c + 1;
-	            int cont = 0;
-	            for(i = 0; i < c - 1; i++)
-	                fscanf(arquivo, "%lf", & Z[i]);
-	            for(i = 0; i < l; i++)
-	                for(j = 0; j < c; j++) {
-	                    if(j == c - 1) { //Verifica se vai ler um coeficiente de X ou a igualdade da restri��o
-	                        fscanf(arquivo, "%d", & tipo_restricao[cont]);
-	                        cont++;
-	                    }
-	                    fscanf(arquivo, "%lf", & restricoes[i][j]);
-	                }
-	            fscanf(arquivo, "%d", & op);
-	            fclose(arquivo);
+        if(fscanf(arquivo, "%d %d", & l, & c) == EOF) {
+            printf("NAO EXISTE MAIS PROBLEMAS NO ARQUIVO!!!\n");
+            getch();
+            continue;
+        }
+        tamZ = c;
+        c = c + 1;
+        int cont = 0;
+        for(i = 0; i < c - 1; i++)
+            fscanf(arquivo, "%lf", & Z[i]);
+        for(i = 0; i < l; i++)
+            for(j = 0; j < c; j++) {
+                if(j == c - 1) { //Verifica se vai ler um coeficiente de X ou a igualdade da restri��o
+                    fscanf(arquivo, "%d", & tipo_restricao[cont]);
+                    cont++;
+                }
+                fscanf(arquivo, "%lf", & restricoes[i][j]);
+            }
+        fscanf(arquivo, "%d", & op);
+        fclose(arquivo);
 				break;
 			case 2:
 				system("cls");
